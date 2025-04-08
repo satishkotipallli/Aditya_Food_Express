@@ -1,357 +1,494 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cart</title>
-  <link rel="icon" type="image/png" href="../Aditya_Food_Express/images/logo2.png"/>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Georgia', serif;
-      background-color: #000;
-      color: #f4c861;
-      background-image: url(../Aditya_Food_Express/images/s1.png);
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      position: relative;
-    }
-
-    body::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      backdrop-filter: blur(10px);
-      z-index: -1;
-    }
-
-    header {
-      color: #f4c861;
-      text-align: center;
-      padding: 40px 20px 10px;
-      font-size: 48px;
-      font-weight: bold;
-      border-bottom: 2px solid #f4c861;
-    }
-
-    .cart-container {
-      max-width: 600px;
-      margin: 30px auto;
-      background: rgba(0, 0, 0, 0.8);
-      padding: 20px;
-      border: 2px solid #f4c861;
-      border-radius: 16px;
-    }
-
-    .cart-item {
-      display: flex;
-      justify-content: space-between;
-      margin: 10px 0;
-      color: #fff;
-    }
-
-    .remove-btn {
-      background-color: #f4c861;
-      border: none;
-      color: #000;
-      padding: 5px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .remove-btn:hover {
-      background-color: #ffe28a;
-    }
-
-    .buy-btn, .clear-btn {
-      background-color: #f4c861;
-      border: none;
-      color: #000;
-      font-weight: bold;
-      font-size: 18px;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      text-align: center;
-      text-decoration: none;
-    }
-
-    .buy-btn:hover, .clear-btn:hover {
-      background-color: #ffe28a;
-    }
-
-    .modal, .success-modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(5px);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .modal-content, .success-content {
-      background: #111;
-      padding: 30px;
-      border-radius: 16px;
-      text-align: center;
-      border: 2px solid #f4c861;
-      color: #f4c861;
-      width: 300px;
-      position: relative;
-    }
-
-    .modal-content h3 {
-      margin-bottom: 15px;
-    }
-
-    .modal-content button, .success-content button {
-      width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background-color: #f4c861;
-      color: #000;
-      font-weight: bold;
-    }
-
-    .modal-content button:hover, .success-content button:hover {
-      background-color: #ffe28a;
-    }
-
-    .payment-fields {
-      margin-top: 15px;
-      display: none;
-      text-align: left;
-    }
-
-    .payment-fields input {
-      width: 100%;
-      padding: 8px;
-      margin-top: 6px;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      border: none;
-      font-size: 14px;
-    }
-
-    .close-button {
-      position: relative;
-      top: 8px;
-      right: 10px;
-      font-size: 18px;
-      line-height: 1;
-      color: #f4c861;
-      cursor: pointer;
-      background: transparent;
-      border: none;
-      padding: 2px 6px;
-      border-radius: 50%;
-      transition: background 0.2s;
-    }
-
-    .close-button:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: #ffe28a;
-    }
-
-    .button-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .close-page-button {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  font-size: 28px;
-  background: transparent;
-  border: none;
-  color: #f4c861;
-  cursor: pointer;
-  border-radius: 50%;
-  transition: background 0.2s;
-}
-
-.close-page-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #ffe28a;
-}
-
-
-    @media (max-width: 480px) {
-      header { font-size: 36px; padding: 20px 10px 10px; }
-      .cart-container { margin: 20px; padding: 16px; }
-      .button-row {
-        flex-direction: column;
-      }
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Cart</title>
+    <link rel="icon" type="image/png" href="../Aditya_Food_Express/images/logo2.png"/>
+    <link href="css/styles.css" rel="stylesheet" />
 </head>
 <body>
- 
-  <header>
-    Cart
-    <button class="close-page-button" onclick="goToHomePage()">×</button>
-  </header>
-  
+    <header>
+        Cart
+        <button class="close-page-button" onclick="goToHomePage()">×</button>
+    </header>
 
-  <div class="cart-container" id="empty-cart" style="display: none; text-align: center;">
-    <h2>Your cart is empty 🛒</h2>
-    <p style="color: #fff;">Looks like you haven't added anything yet.</p>
-    <a href="menu.html" style="text-decoration: none;">
-      <button class="buy-btn" style="font-size: 24px;">➤ Go to Menu</button>
-    </a>
-  </div>
-
-  <div class="cart-container" id="cart-items"></div>
-  <div class="cart-container" id="total-price" style="text-align: center; font-size: 20px;"></div>
-
-  <div class="cart-container button-row">
-    <button class="buy-btn" id="buy-now" onclick="showPaymentModal()">Buy Now</button>
-    <button class="clear-btn" onclick="clearCart()">Clear Cart</button>
-  </div>
-
-  <div class="modal" id="payment-modal">
-    <div class="modal-content">
-      <button class="close-button" onclick="closePaymentModal()">×</button>
-      <h3>Select Payment Method</h3>
-      <button onclick="selectPayment('upi')">UPI</button>
-      <button onclick="selectPayment('card')">Card</button>
-      <button onclick="selectPayment('cod')">Cash on Delivery</button>
-
-      <div class="payment-fields" id="upi-fields">
-        <label for="upi-id">Enter UPI ID:</label>
-        <input type="text" id="upi-id" placeholder="e.g. user@bank">
-        <button onclick="completePurchase('upi')">Pay Now</button>
-      </div>
-
-      <div class="payment-fields" id="card-fields">
-        <label>Card Number:</label>
-        <input type="text" id="card-number" placeholder="1234 5678 9012 3456">
-        <label>Expiry Date:</label>
-        <input type="text" id="card-expiry" placeholder="MM/YY">
-        <label>CVV:</label>
-        <input type="password" id="card-cvv" placeholder="123">
-        <button onclick="completePurchase('card')">Pay Now</button>
-      </div>
+    <div class="cart-container" id="empty-cart" style="display: none; text-align: center;">
+        <h2>Your cart is empty 🛒</h2>
+        <p style="color: #fff;">Looks like you haven't added anything yet.</p>
+        <a href="menu.html" style="text-decoration: none;">
+            <button class="buy-btn" style="font-size: 24px;">➤ Go to Menu</button>
+        </a>
     </div>
-  </div>
 
-  <div class="success-modal" id="success-modal">
-    <div class="success-content">
-      <h3>🎉 Payment Successful!</h3>
-      <p>Your food is being prepared. Thank you for ordering!</p>
-      <button onclick="redirectToMenu()">Go to Menu</button>
+    <div class="cart-container" id="cart-items"></div>
+    <div class="cart-container" id="total-price" style="text-align: center; font-size: 20px;"></div>
+    <div class="cart-container" style="text-align: center;">
+        <input id="coupon-code" type="text" placeholder="Enter coupon code (e.g., SAVE10)" style="padding: 8px; border-radius: 6px; width: 200px;">
+        <button class="buy-btn" onclick="applyCoupon()">Apply</button>
+        <p id="discount-msg" style="margin-top: 8px; color: lightgreen;"></p>
     </div>
-  </div>
 
-  <script>
-    function loadCart() {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      const container = document.getElementById('cart-items');
-      const totalPrice = document.getElementById('total-price');
-      const emptyCartSection = document.getElementById('empty-cart');
-      const buyBtn = document.getElementById('buy-now');
-      const clearBtn = document.querySelector('.clear-btn');
+    <div class="cart-container button-row">
+        <button class="buy-btn" id="buy-now" onclick="showPaymentModal()">Buy Now</button>
+        <button class="clear-btn" onclick="clearCart()">Clear Cart</button>
+    </div>
 
-      if (cart.length === 0) {
-        container.style.display = 'none';
-        totalPrice.style.display = 'none';
-        buyBtn.style.display = 'none';
-        clearBtn.style.display = 'none';
-        emptyCartSection.style.display = 'block';
-        return;
-      }
+    <div class="modal" id="payment-modal">
+        <div class="modal-content">
+            <button class="close-button" onclick="closePaymentModal()">×</button>
+            <h3>Select Payment Method</h3>
+            <button onclick="selectPayment('upi')">UPI</button>
+            <button onclick="selectPayment('card')">Card</button>
+            <button onclick="selectPayment('cod')">Cash on Delivery</button>
 
-      container.style.display = 'block';
-      totalPrice.style.display = 'block';
-      buyBtn.style.display = 'block';
-      clearBtn.style.display = 'block';
-      emptyCartSection.style.display = 'none';
+            <div class="payment-fields" id="upi-fields">
+                <label for="upi-id">Enter UPI ID:</label>
+                <input type="text" id="upi-id" placeholder="e.g. user@bank">
+                <button onclick="initiatePayment('upi')">Pay Now</button>
+            </div>
 
-      container.innerHTML = '';
-      let total = 0;
+            <div class="payment-fields" id="card-fields">
+                <label>Card Number:</label>
+                <input type="text" id="card-number" placeholder="1234 5678 9012 3456">
+                <label>Expiry Date:</label>
+                <input type="text" id="card-expiry" placeholder="MM/YY">
+                <label>CVV:</label>
+                <input type="password" id="card-cvv" placeholder="123">
+                <button onclick="initiatePayment('card')">Pay Now</button>
+            </div>
+        </div>
+    </div>
 
-      cart.forEach((item, index) => {
-        const div = document.createElement('div');
-        div.className = 'cart-item';
-        div.innerHTML = `${item.name} <strong>₹${item.price}</strong>
-          <button class="remove-btn" onclick="removeItem(${index})">Remove</button>`;
-        container.appendChild(div);
-        total += item.price;
-      });
+   <div class="success-modal" id="success-modal">
+        <div class="success-content">
+            <h3></h3>
+            <p>Your food is being prepared. Thank you for ordering!</p>
+            <div id="bill-summary" style="margin: 20px 0; text-align: left;"></div>
+            <button onclick="redirectToMenu()">Go to Menu</button>
+            <button onclick="printBill()" style="margin-top: 10px;">Print Receipt</button>
+        </div>
+    </div>
 
-      totalPrice.textContent = `Total: ₹${total}`;
-    }
+    <script>
+        let discountAmount = 0;
+        let currentPaymentMethod = '';
 
-    function removeItem(index) {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      cart.splice(index, 1);
-      localStorage.setItem('cart', JSON.stringify(cart));
-      loadCart();
-    }
+        function loadCart() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const container = document.getElementById('cart-items');
+            const totalPrice = document.getElementById('total-price');
+            const emptyCartSection = document.getElementById('empty-cart');
+            const buyBtn = document.getElementById('buy-now');
+            const clearBtn = document.querySelector('.clear-btn');
 
-    function showPaymentModal() {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      if (cart.length === 0) return;
-      document.getElementById('payment-modal').style.display = 'flex';
-    }
+            if (cart.length === 0) {
+                container.style.display = 'none';
+                totalPrice.style.display = 'none';
+                buyBtn.style.display = 'none';
+                clearBtn.style.display = 'none';
+                emptyCartSection.style.display = 'block';
+                return;
+            }
 
-    function closePaymentModal() {
-      document.getElementById('payment-modal').style.display = 'none';
-      document.querySelectorAll('.payment-fields').forEach(div => div.style.display = 'none');
-    }
+            container.style.display = 'block';
+            totalPrice.style.display = 'block';
+            buyBtn.style.display = 'block';
+            clearBtn.style.display = 'block';
+            emptyCartSection.style.display = 'none';
 
-    function selectPayment(type) {
-      document.querySelectorAll('.payment-fields').forEach(div => div.style.display = 'none');
-      if (type === 'upi') document.getElementById('upi-fields').style.display = 'block';
-      else if (type === 'card') document.getElementById('card-fields').style.display = 'block';
-      else completePurchase('cod');
-    }
+            container.innerHTML = '';
+            let total = 0;
 
-    function completePurchase(method) {
-      if (method === 'upi') {
-        const upi = document.getElementById('upi-id').value.trim();
-        if (!upi) return;
-      }
+            cart.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'cart-item';
+                div.innerHTML = `
+                    <span>${item.name}</span>
+                    <input type="number" min="1" value="${item.quantity || 1}" onchange="updateQuantity(${index}, this.value)" style="width: 50px; margin: 0 10px;">
+                    <strong>₹${item.price * (item.quantity || 1)}</strong>
+                    <button class="remove-btn" onclick="removeItem(${index})">Remove</button>
+                `;
+                total += item.price * (item.quantity || 1);
+                container.appendChild(div);
+            });
 
-      if (method === 'card') {
-        const num = document.getElementById('card-number').value.trim();
-        const expiry = document.getElementById('card-expiry').value.trim();
-        const cvv = document.getElementById('card-cvv').value.trim();
-        if (!num || !expiry || !cvv) return;
-      }
+            let discount = Math.round(total * discountAmount);
+            let finalTotal = total - discount;
+            totalPrice.innerHTML = discount > 0
+                ? `Total: ₹${total} <br> Discount: ₹${discount} <br><strong>Final Total: ₹${finalTotal}</strong>`
+                : `Total: ₹${total}`;
+        }
 
-      localStorage.removeItem('cart');
-      document.getElementById('payment-modal').style.display = 'none';
-      document.getElementById('success-modal').style.display = 'flex';
-      loadCart();
-    }
+        function removeItem(index) {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            loadCart();
+        }
 
-    function redirectToMenu() {
-      window.location.href = 'menu.html';
-    }
-    function goToHomePage() {
-  window.location.href = 'index.html'; // change this to your actual homepage
+        function updateQuantity(index, value) {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart[index].quantity = parseInt(value);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            loadCart();
+        }
+
+        function showPaymentModal() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (cart.length === 0) return;
+            document.getElementById('payment-modal').style.display = 'flex';
+        }
+
+        function closePaymentModal() {
+            document.getElementById('payment-modal').style.display = 'none';
+            document.querySelectorAll('.payment-fields').forEach(div => div.style.display = 'none');
+        }
+
+        function selectPayment(type) {
+            currentPaymentMethod = type;
+            document.querySelectorAll('.payment-fields').forEach(div => div.style.display = 'none');
+            if (type === 'upi') document.getElementById('upi-fields').style.display = 'block';
+            else if (type === 'card') document.getElementById('card-fields').style.display = 'block';
+            else initiatePayment('cod');
+        }
+
+        function initiatePayment(method) {
+            // Simulate payment processing (replace with actual API calls)
+            setTimeout(() => {
+                completePurchase(method);
+            }, 1500); // Simulate a 1.5-second payment processing time
+        }
+
+        function completePurchase(method) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            if (method === 'upi') {
+                const upi = document.getElementById('upi-id').value.trim();
+                if (!upi) return;
+            }
+
+            if (method === 'card') {
+                const num = document.getElementById('card-number').value.trim();
+                const expiry = document.getElementById('card-expiry').value.trim();
+                const cvv = document.getElementById('card-cvv').value.trim();
+                if (!num || !expiry || !cvv) return;
+            }
+
+            const now = new Date();
+            const date = now.toLocaleDateString();
+            const time = now.toLocaleTimeString();
+
+            let total = 0;
+            let billHTML = `<h4 style="color:#ffe28a; border-bottom: 1px solid #f4c861; padding-bottom: 8px;">🧾 Bill Summary</h4>`;
+            billHTML += `<p style="margin: 4px 0; color: #ccc;"><span style="color: #f4c861;">📅</span> ${date} <span style="margin-left: 10px; color: #f4c861;">⏰</span> ${time}</p>`;
+            billHTML += `<ul style="padding-left: 20px; margin-top: 15px;">`;
+
+            cart.forEach(item => {
+                const itemTotal = item.price * (item.quantity || 1);
+                billHTML += `<li style="margin-bottom: 8px; display: flex; justify-content: space-between;"><span>${item.name} x ${item.quantity || 1}</span> <span>₹${itemTotal}</span></li>`;
+                total += itemTotal;
+            });
+
+            billHTML += `</ul><div style="margin-top: 15px; border-top: 1px dashed #f4c861; padding-top: 10px;">`;
+
+            const discount = Math.round(total * discountAmount);
+            const finalTotal = total - discount;
+
+            if (discount > 0) {
+                billHTML += `<p style="display: flex; justify-content: space-between;"><span>Discount:</span> <span style="color: lightgreen;">- ₹${discount}</span></p>`;
+            }
+
+            billHTML += `
+                <p style="display: flex; justify-content: space-between; font-weight: bold; margin-top: 8px;">
+                    <span>Total Paid:</span>
+                    <span style="color: #f4c861;">₹${finalTotal}</span>
+                </p>
+                <p style="margin-top: 15px; color: #ccc; font-size: 14px; text-align: center;">
+                    Payment Method: ${method === 'cod' ? 'Cash on Delivery' : method.toUpperCase()}
+                </p>
+            </div>`;
+
+            document.getElementById('bill-summary').innerHTML = billHTML;
+
+            let orderHistory = JSON.parse(localStorage.getItem('orderHistory')) || [];
+            orderHistory.push({
+                orderId: 'ADX' + Math.floor(100000 + Math.random() * 900000),
+                date,
+                time,
+                items: cart,
+                total: finalTotal,
+                discount,
+                method
+            });
+            localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
+
+            localStorage.removeItem('cart');
+            document.getElementById('payment-modal').style.display = 'none';
+            document.getElementById('success-modal').style.display = 'flex';
+            document.getElementById('coupon-code').value = '';
+            document.getElementById('discount-msg').textContent = '';
+            discountAmount = 0;
+            loadCart();
+        }
+
+        function printBill() {
+            const billContent = document.getElementById('bill-summary').innerHTML;
+            const orderId = 'AFE' + Date.now();
+            const now = new Date();
+            const date = now.toLocaleDateString();
+            const time = now.toLocaleTimeString();
+            const cart = JSON.parse(localStorage.getItem('orderHistory'))?.slice(-1)[0]?.items || [];
+            const total = JSON.parse(localStorage.getItem('orderHistory'))?.slice(-1)[0]?.total || 0;
+            const discount = JSON.parse(localStorage.getItem('orderHistory'))?.slice(-1)[0]?.discount || 0;
+            const method = JSON.parse(localStorage.getItem('orderHistory'))?.slice(-1)[0]?.method || '';
+
+            const billWindow = window.open('', '_blank');
+            billWindow.document.write(`
+                <html>
+                <head>
+                    <title>Aditya Food Express - Invoice</title>
+                    <style>
+                        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+                        body {
+                            font-family: 'Montserrat', sans-serif;
+                            margin: 0;
+                            padding: 0;
+                            background: #f9f5e8;
+                        }
+                        .invoice-container {
+                            max-width: 600px;
+                            margin: 30px auto;
+                            padding: 30px;
+                            background: white;
+                            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+                            border-top: 5px solid #f4c861;
+                            position: relative;
+                        }
+                            .cod-watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    font-size: 80px;
+    color: rgba(255, 193, 7, 0.1); /* light yellow */
+    font-weight: bold;
+    z-index: 0;
+    pointer-events: none;
 }
 
+                        .header {
+                            text-align: center;
+                            margin-bottom: 30px;
+                        }
+                        .header h1 {
+                            color: #d4a500;
+                            margin: 0;
+                            font-size: 28px;
+                            letter-spacing: 1px;
+                        }
+                        .restaurant-info {
+                            font-size: 14px;
+                            color: #666;
+                            margin: 10px 0;
+                        }
+                        .order-info {
+                            display: flex;
+                            justify-content: space-between;
+                            margin-bottom: 20px;
+                            padding-bottom: 15px;
+                            border-bottom: 1px solid #eee;
+                        }
+                        .order-id {
+                            font-weight: bold;
+                            color: #333;
+                        }
+                        .order-date {
+                            color: #666;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin: 20px 0;
+                        }
+                        th {
+                            text-align: left;
+                            padding: 12px 8px;
+                            background: #f8f4e5;
+                            color: #333;
+                            font-weight: 600;
+                            border-bottom: 2px solid #f4c861;
+                        }
+                        td {
+                            padding: 12px 8px;
+                            border-bottom: 1px solid #eee;
+                        }
+                        .total-row {
+                            font-weight: bold;
+                            background: #f8f4e5;
+                        }
+                        .summary {
+                            margin-top: 30px;
+                            background: #f8f4e5;
+                            padding: 20px;
+                            border-radius: 8px;
+                        }
+                        .summary-row {
+                            display: flex;
+                            justify-content: space-between;
+                            margin-bottom: 10px;
+                        }
+                        .grand-total {
+                            font-size: 20px;
+                            font-weight: bold;
+                            color: #d4a500;
+                            margin-top: 15px;
+                            padding-top: 15px;
+                            border-top: 2px dashed #d4a500;
+                        }
+                        .payment-method {
+                            margin-top: 25px;
+                            padding: 15px;
+                            background: #f0e6cc;
+                            border-left: 4px solid #f4c861;
+                            font-size: 15px;
+                        }
+                        .footer {
+                            text-align: center;
+                            margin-top: 40px;
+                            color: #999;
+                            font-size: 13px;
+                        }
+                        .thank-you {
+                            text-align: center;
+                            margin-top: 30px;
+                            font-size: 18px;
+                            color: #d4a500;
+                            font-weight: bold;
+                        }
+                        .decoration {
+                            position: absolute;
+                            top: 10px;
+                            right: 20px;
+                            font-size: 60px;
+                            color: rgba(212, 165, 0, 0.1);
+                            z-index: -1;
+                        }
+                    </style>
+                </head>
+               <body>
+    <div class="invoice-container">
+        ${method === 'cod' ? `<div class="cod-watermark">COD</div>` : ''}
+        <div class="decoration">🍕</div>
 
-    function clearCart() {
-      localStorage.removeItem('cart');
-      loadCart();
-    }
+                        <div class="header">
+                            <h1>ADITYA FOOD EXPRESS</h1>
+                            <div class="restaurant-info">
+                                📍 surampalem, ADB road ,kakinada dist.| 📞8919151898
+                            </div>
+                        </div>
 
-    window.onload = loadCart;
-  </script>
+                        <div class="order-info">
+                            <div class="order-id">Order #${orderId}</div>
+                            <div class="order-date">${date} at ${time}</div>
+                        </div>
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Qty</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${cart.map(item => `
+                                    <tr>
+                                        <td>${item.name}</td>
+                                        <td>${item.quantity || 1}</td>
+                                        <td>₹${item.price}</td>
+                                        <td>₹${item.price * (item.quantity || 1)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+
+                        <div class="summary">
+                            ${discount > 0 ? `
+                                <div class="summary-row">
+                                    <span>Subtotal:</span>
+                                    <span>₹${total + discount}</span>
+                                </div>
+                                <div class="summary-row" style="color: #4CAF50;">
+                                    <span>Discount:</span>
+                                    <span>- ₹${discount}</span>
+                                </div>
+                            ` : ''}
+                            <div class="summary-row grand-total">
+                                <span>Total Amount:</span>
+                                <span>₹${total}</span>
+                            </div>
+                        </div>
+
+                        <div class="payment-method">
+    <strong>Payment Method:</strong> ${method === 'cod' ? 'Cash on Delivery' : method.toUpperCase()}
+    ${method === 'cod' ? `
+        <div style="margin-top: 10px; padding: 10px; background: #fff3cd; border-left: 4px solid #ffc107; color: #856404;">
+            ⚠️ Please ensure exact amount is collected on delivery.
+        </div>
+        <div style="margin-top: 10px; color: #dc3545; font-weight: bold;">💵 COD: Payment Pending</div>
+    ` : ''}
+</div>
+
+
+                        <div class="thank-you">
+                            Thank you for your order!
+                        </div>
+
+                        <div class="footer">
+                            We appreciate your business. Please visit us again!
+                        </div>
+                    </div>
+                    
+                </body>
+                </html>
+            `);
+            billWindow.document.close();
+            setTimeout(() => {
+                billWindow.print();
+            }, 500);
+        }
+
+        function redirectToMenu() {
+            window.location.href = 'menu.html';
+        }
+
+        function goToHomePage() {
+            window.location.href = 'index.html';
+        }
+
+        function clearCart() {
+            localStorage.removeItem('cart');
+            loadCart();
+        }
+
+        function applyCoupon() {
+            const code = document.getElementById('coupon-code').value.trim().toUpperCase();
+            const discountText = document.getElementById('discount-msg');
+            if (code === 'SAVE10') {
+                discountAmount = 0.1;
+                discountText.textContent = "✅ 10% discount applied!";
+                discountText.style.color = "lightgreen";
+            } else {
+                discountAmount = 0;
+                discountText.textContent = "❌ Invalid coupon code.";
+                discountText.style.color = "#ff6b6b";
+            }
+            loadCart();
+        }
+
+        window.onload = loadCart;
+    </script>
 </body>
 </html>
