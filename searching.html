@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Search Results</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Georgia', serif;
+      background-color: #000;
+      color: #f4c861;
+      overflow-x: hidden;
+    }
+
+    header {
+      text-align: center;
+      padding: 20px;
+      font-size: 32px;
+      border-bottom: 2px solid #f4c861;
+      position: relative;
+    }
+
+    .home-cart-buttons {
+      position: absolute;
+      top: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+
+    .home-cart-buttons button {
+      background-color: #f4c861;
+      color: #000;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .cart-btn .count {
+      background-color: red;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 12px;
+      margin-left: 5px;
+    }
+
+    .filters {
+      position: sticky;
+      top: 0;
+      background: #111;
+      padding: 10px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .filters select, .filters input {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+    }
+
+    .results {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .item {
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid #f4c861;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .item-name {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .item-price {
+      margin: 8px 0;
+    }
+
+    .add-btn {
+      background-color: #f4c861;
+      color: #000;
+      padding: 8px 14px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #f4c861;
+      color: #000;
+      padding: 12px 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+      font-weight: bold;
+      display: none;
+      z-index: 10000;
+    }
+
+    .cart-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      background: #111;
+      color: #f4c861;
+      border: 2px solid #f4c861;
+      border-radius: 16px;
+      padding: 20px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      z-index: 9999;
+      display: none;
+      animation: popup 0.3s ease-out forwards;
+      overflow: hidden; /* Ensure no scrollbars from the popup */
+    }
+
+    @keyframes popup {
+      from { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+      to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
+    .cart-modal .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 22px;
+      color: #f4c861;
+      cursor: pointer;
+      transition: transform 0.4s ease;
+    }
+
+    .cart-modal .close-btn:hover {
+      transform: rotate(180deg) scale(1.2);
+    }
+
+    .cart-items {
+      max-height: 250px; /* Reduced height to accommodate checkout button */
+      overflow-y: auto;
+      margin-top: 20px;
+      padding-right: 10px; /* Add some padding for scrollbar if it appears */
+    }
+
+    .cart-items::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .cart-items::-webkit-scrollbar-thumb {
+      background-color: #f4c861;
+      border-radius: 5px;
+    }
+
+    .cart-items div {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .cart-item-details {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cart-item-quantity {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .cart-item-quantity button {
+      background: none;
+      border: 1px solid #f4c861;
+      color: #f4c861;
+      padding: 2px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .cart-items div span {
+      margin: 0 5px;
+    }
+
+    .cart-total {
+      font-weight: bold;
+      margin-top: 15px;
+      text-align: right;
+    }
+
+    .cart-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    .checkout-btn {
+      background-color: #f4c861;
+      color: #000;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    @media (max-width: 500px) {
+      .filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filters select, .filters input {
+        width: 100%;
+      }
+
+      .home-cart-buttons {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    Search Results
+    <div class="home-cart-buttons">
+      <button onclick="location.href='index.html'">
+        <span>🏠</span> Home
+      </button>
+      <button class="cart-btn" onclick="toggleCart()">
+        <span>🛒</span> Cart <span class="count" id="cart-count">0</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="filters" id="filters" style="display: none;">
+    <input type="text" id="search-input" placeholder="Search food...">
+    <select id="canteen-filter">
+      <option value="">All Canteens</option>
+      <option value="Satya-canteen">Satya-canteen</option>
+      <option value="Aparna-canteen">Aparna-canteen</option>
+      <option value="Hostel-canteen">Hostel-canteen</option>
+    </select>
+    <select id="type-filter">
+      <option value="">All Types</option>
+      <option value="veg">Veg</option>
+      <option value="non-veg">Non-Veg</option>
+    </select>
+  </div>
+
+  <div class="results" id="results-container"></div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="cart-modal" id="cart-modal">
+    <button class="close-btn" onclick="toggleCart()">✖</button>
+    <h2>Your Cart</h2>
+    <div class="cart-items" id="cart-items"></div>
+    <div class="cart-total" id="cart-total">Total: ₹0</div>
+    <div class="cart-actions">
+      <button class="checkout-btn" onclick="goToCartPage()">Checkout</button>
+    </div>
+  </div>
+
+  <!-- (Everything before <script> tag remains unchanged) -->
+
+<script>
+  const menuItems = [
+    { name: 'Veg Biryani', price: 120, category: 'Satya-canteen', type: 'veg' },
+    { name: 'Chicken Biryani', price: 150, category: 'Satya-canteen', type: 'non-veg' },
+    { name: 'Paneer Butter Masala', price: 130, category: 'Aparna-canteen', type: 'veg' },
+    { name: 'Chicken Curry', price: 160, category: 'Aparna-canteen', type: 'non-veg' },
+    { name: 'Dosa', price: 40, category: 'Hostel-canteen', type: 'veg' },
+    { name: 'Egg Dosa', price: 60, category: 'Hostel-canteen', type: 'non-veg' },
+    { name: 'Samosa', price: 20, category: 'Hostel-canteen', type: 'veg' },
+    { name: 'Veg Thali', price: 100, category: 'Satya-canteen', type: 'veg' },
+    { name: 'Non-Veg Thali', price: 140, category: 'Aparna-canteen', type: 'non-veg' },
+    { name: 'Fried Rice', price: 90, category: 'Satya-canteen', type: 'veg' },
+    { name: 'Chicken Fried Rice', price: 110, category: 'Satya-canteen', type: 'non-veg' },
+  ];
+
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+  function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.style.display = 'block';
+    setTimeout(() => toast.style.display = 'none', 2000);
+  }
+
+  function updateCartCount() {
+    document.getElementById('cart-count').textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+  }
+
+  function addToCart(name, price) {
+    const existingItem = cart.find(item => item.name === name);
+    if (existingItem) {
+      existingItem.quantity++;
+    } else {
+      cart.push({ name, price, quantity: 1 });
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+    showToast(`${name} added to cart!`);
+  }
+
+  function renderFilteredResults() {
+    const query = document.getElementById('search-input').value.toLowerCase();
+    const canteen = document.getElementById('canteen-filter').value;
+    const type = document.getElementById('type-filter').value;
+    const container = document.getElementById('results-container');
+
+    if (!query) {
+      container.innerHTML = "";
+      return;
+    }
+
+    const filtered = menuItems.filter(item => {
+      const matchQuery = item.name.toLowerCase().includes(query);
+      const matchCanteen = !canteen || item.category === canteen;
+      const matchType = !type || item.type === type;
+      return matchQuery && matchCanteen && matchType;
+    });
+
+    container.innerHTML = filtered.length > 0 ? filtered.map(item => `
+      <div class="item">
+        <div class="item-name">${item.name}</div>
+        <div class="item-price">₹${item.price} - <em>${item.category}</em> - ${item.type}</div>
+        <button class="add-btn" onclick="addToCart('${item.name}', ${item.price})">Add to Cart</button>
+      </div>
+    `).join('') : "<p style='text-align:center;'>No items match your search.</p>";
+  }
+
+  function toggleCart() {
+    const modal = document.getElementById('cart-modal');
+    const isVisible = modal.style.display === 'block';
+    modal.style.display = isVisible ? 'none' : 'block';
+    if (!isVisible) renderCartItems();
+  }
+
+  function renderCartItems() {
+    const itemsContainer = document.getElementById('cart-items');
+    const totalContainer = document.getElementById('cart-total');
+
+    if (cart.length === 0) {
+      itemsContainer.innerHTML = "<p>Your cart is empty.</p>";
+      totalContainer.textContent = "Total: ₹0";
+      return;
+    }
+
+    let total = 0;
+    itemsContainer.innerHTML = '';
+    cart.forEach((item, index) => {
+      const itemTotal = item.price * item.quantity;
+      total += itemTotal;
+      itemsContainer.innerHTML += `
+        <div>
+          <div class="cart-item-details">
+            <span>${item.name}</span>
+            <span>₹${item.price}</span>
+            <div class="cart-item-quantity">
+              <button onclick="updateQuantity(${index}, -1)">-</button>
+              <span>${item.quantity}</span>
+              <button onclick="updateQuantity(${index}, 1)">+</button>
+            </div>
+          </div>
+          <span>₹${itemTotal}</span>
+          <button onclick="removeItem(${index})" style="background:#f4c861; color:#000; border:none; border-radius:4px; cursor:pointer;">🗑</button>
+        </div>
+      `;
+    });
+    totalContainer.textContent = "Total: ₹" + total;
+  }
+
+  function updateQuantity(index, change) {
+    if (cart[index].quantity + change > 0) {
+      cart[index].quantity += change;
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCartItems();
+      updateCartCount();
+    }
+  }
+
+  function removeItem(index) {
+    cart.splice(index, 1);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+    renderCartItems();
+  }
+
+  function goToCartPage() {
+    window.location.href = 'cart.html';
+  }
+
+  window.onload = () => {
+    updateCartCount();
+    const q = getQueryParam('q');
+    const filters = document.getElementById('filters');
+    const container = document.getElementById('results-container');
+
+    if (q && q.trim() !== "") {
+      document.getElementById('search-input').value = q;
+      filters.style.display = 'flex';
+      renderFilteredResults();
+    } else {
+      filters.style.display = 'none';
+      container.innerHTML = "<p style='text-align:center; padding: 30px; font-size: 20px;'>Please search from the menu page first.</p>";
+    }
+  };
+
+  document.getElementById('search-input').addEventListener('input', renderFilteredResults);
+  document.getElementById('canteen-filter').addEventListener('change', renderFilteredResults);
+  document.getElementById('type-filter').addEventListener('change', renderFilteredResults);
+</script>
+
+</body>
+</html>
